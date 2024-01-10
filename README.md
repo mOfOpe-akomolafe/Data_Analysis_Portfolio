@@ -1,2 +1,2 @@
-# SQL_Portfolio
-Portfolio of completed SQL projects demonstrating an understanding of the subject matter. 
+# Data Analysis Portfolio
+A portfolio of completed data analysis projects demonstrating an understanding of the data analysis subject matter.
