@@ -1,10 +1,8 @@
-## This project aims to explore data analysis skills in SQL using COVID-19 data sourced from -- to answer scenarios. 
+## This project aims to explore data analysis skills in SQL using COVID-19 data sourced from Our World in Data: https://ourworldindata.org/coronavirus to answer scenarios. 
 
 Skills utilized: Creating databases, Importing CSV files, JOINS, Aggregate functions 
 
 Platform: PostgreSQL
-
-Data sourced from Our World in Data: https://ourworldindata.org/coronavirus
 
 ##
 
