@@ -1,8 +1,10 @@
-## This project aims to explore data analysis skills in SQL using COVID-19 data sourced from Our World in Data: https://ourworldindata.org/coronavirus to answer scenarios. 
+## This project aims to explore data analysis skills in SQL using COVID-19 data sourced from -- to answer scenarios. 
 
-Skills utilized: Creating databases, Importing CSV files, JOINS, Aggregate functions 
+Skills utilized: Creating databases, Importing CSV files, JOINS, Aggregate functions, CTE (Common Table Expression)
 
 Platform: PostgreSQL
+
+Data sourced from Our World in Data: https://ourworldindata.org/coronavirus
 
 ##
 
@@ -104,12 +106,35 @@ ORDER BY date;
 -- Performing an exploration on the total population vs vaccinations.
 
 
-SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations :: bigint, SUM(vac.new_vaccinations) OVER (PARTITION by dea.location ORDER BY dea.location, dea.date)
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations :: bigint, SUM(vac.new_vaccinations) OVER (PARTITION by dea.location ORDER BY dea.location, dea.date) as rolling_people_vaccinated
 FROM covid_deaths AS  dea
 JOIN covid_vaccinations AS vac
 ON dea.date = vac.date AND dea."location" = vac."location"
 WHERE dea.continent IS NOT NULL
 ORDER BY dea.location, dea.date;
 
+-- Using CTE (Common Table Expression)
 
 
+With PopVsVac (Continent, Location, Date, Population, Vaccinations, rolling_people_vaccinated)
+as
+(
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations :: bigint, SUM(vac.new_vaccinations) OVER (PARTITION by dea.location ORDER BY dea.location, dea.date) as rolling_people_vaccinated
+FROM covid_deaths AS  dea
+JOIN covid_vaccinations AS vac
+ON dea.date = vac.date AND dea."location" = vac."location"
+WHERE dea.continent IS NOT NULL
+--ORDER BY dea.location, dea.date;
+)
+SELECT *, (rolling_people_vaccinated/Population)*100 
+FROM PopVsVac
+
+
+-- Creating view to store data later for visualizations
+
+Create View Population_Vaccination_Comparison AS
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations :: bigint, SUM(vac.new_vaccinations) OVER (PARTITION by dea.location ORDER BY dea.location, dea.date) as rolling_people_vaccinated
+FROM covid_deaths AS  dea
+JOIN covid_vaccinations AS vac
+ON dea.date = vac.date AND dea."location" = vac."location"
+WHERE dea.continent IS NOT NULL;
